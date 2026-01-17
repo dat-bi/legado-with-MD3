@@ -250,4 +250,17 @@ object PreferKey {
     const val sliderVibrator = "sliderVibrator"
     const val audioCacheCleanTime = "audioCacheCleanTime"
     const val audioPreDownloadNum = "audioPreDownloadNum"
+
+    const val translateEnabled = "translateEnabled"
+    const val translateProvider = "translateProvider"
+    const val translateTargetLang = "translateTargetLang"
+    const val translateDelayMs = "translateDelayMs"
+    const val translateMaxChars = "translateMaxChars"
+    const val translateDichngayEndpoint = "translateDichngayEndpoint"
+    const val translateDichnhanhEndpoint = "translateDichnhanhEndpoint"
+    const val translateDichnhanhMode = "translateDichnhanhMode"
+    const val translateDichnhanhType = "translateDichnhanhType"
+    const val translateDichnhanhEnableAnalyze = "translateDichnhanhEnableAnalyze"
+    const val translateDichnhanhEnableFanfic = "translateDichnhanhEnableFanfic"
+    const val translateSangtacvietEndpoint = "translateSangtacvietEndpoint"
 }

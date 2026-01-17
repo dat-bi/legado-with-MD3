@@ -5,6 +5,8 @@ import android.os.Build
 import io.legado.app.BuildConfig
 import io.legado.app.constant.PreferKey
 import io.legado.app.data.appDb
+import io.legado.app.help.translate.TranslateConfig
+import io.legado.app.help.translate.TranslateProvider
 import io.legado.app.ui.book.manga.config.MangaScrollMode
 import io.legado.app.utils.canvasrecorder.CanvasRecorderFactory
 import io.legado.app.utils.getPrefBoolean
@@ -997,5 +999,100 @@ object AppConfig : SharedPreferences.OnSharedPreferenceChangeListener {
             val str = appCtx.getPrefInt(PreferKey.audioCacheCleanTime, 10)
             return str * 60 * 1000L
         }
+
+    var translateEnabled: Boolean
+        get() = appCtx.getPrefBoolean(PreferKey.translateEnabled, true)
+        set(value) {
+            appCtx.putPrefBoolean(PreferKey.translateEnabled, value)
+        }
+
+    var translateProvider: String
+        get() = appCtx.getPrefString(PreferKey.translateProvider, TranslateProvider.DICHNGAY.name)
+        set(value) {
+            appCtx.putPrefString(PreferKey.translateProvider, value)
+        }
+
+    var translateTargetLang: String
+        get() = appCtx.getPrefString(PreferKey.translateTargetLang, "vi")
+        set(value) {
+            appCtx.putPrefString(PreferKey.translateTargetLang, value)
+        }
+
+    var translateDelayMs: Long
+        get() = appCtx.getPrefLong(PreferKey.translateDelayMs, 400L)
+        set(value) {
+            appCtx.putPrefLong(PreferKey.translateDelayMs, value)
+        }
+
+    var translateMaxChars: Int
+        get() = appCtx.getPrefInt(PreferKey.translateMaxChars, 4500)
+        set(value) {
+            appCtx.putPrefInt(PreferKey.translateMaxChars, value)
+        }
+
+    var translateDichngayEndpoint: String
+        get() = appCtx.getPrefString(PreferKey.translateDichngayEndpoint, "https://dichngay.com/translate/text")
+        set(value) {
+            appCtx.putPrefString(PreferKey.translateDichngayEndpoint, value)
+        }
+
+    var translateDichnhanhEndpoint: String
+        get() = appCtx.getPrefString(PreferKey.translateDichnhanhEndpoint, "https://api.dichnhanh.com/")
+        set(value) {
+            appCtx.putPrefString(PreferKey.translateDichnhanhEndpoint, value)
+        }
+
+    var translateDichnhanhMode: String
+        get() = appCtx.getPrefString(PreferKey.translateDichnhanhMode, "vi")
+        set(value) {
+            appCtx.putPrefString(PreferKey.translateDichnhanhMode, value)
+        }
+
+    var translateDichnhanhType: String
+        get() = appCtx.getPrefString(PreferKey.translateDichnhanhType, "Ancient")
+        set(value) {
+            appCtx.putPrefString(PreferKey.translateDichnhanhType, value)
+        }
+
+    var translateDichnhanhEnableAnalyze: Boolean
+        get() = appCtx.getPrefBoolean(PreferKey.translateDichnhanhEnableAnalyze, false)
+        set(value) {
+            appCtx.putPrefBoolean(PreferKey.translateDichnhanhEnableAnalyze, value)
+        }
+
+    var translateDichnhanhEnableFanfic: Boolean
+        get() = appCtx.getPrefBoolean(PreferKey.translateDichnhanhEnableFanfic, false)
+        set(value) {
+            appCtx.putPrefBoolean(PreferKey.translateDichnhanhEnableFanfic, value)
+        }
+
+    var translateSangtacvietEndpoint: String
+        get() = appCtx.getPrefString(
+            PreferKey.translateSangtacvietEndpoint,
+            "http://14.225.254.182/index.php?ngmar=trans&langhint=chinese"
+        )
+        set(value) {
+            appCtx.putPrefString(PreferKey.translateSangtacvietEndpoint, value)
+        }
+
+    fun buildTranslateConfig(): TranslateConfig {
+        val provider = runCatching {
+            TranslateProvider.valueOf(translateProvider)
+        }.getOrDefault(TranslateProvider.DICHNGAY)
+        return TranslateConfig(
+            enabled = translateEnabled,
+            provider = provider,
+            targetLang = translateTargetLang,
+            delayMs = translateDelayMs,
+            maxCharsPerRequest = translateMaxChars,
+            dichngayEndpoint = translateDichngayEndpoint,
+            dichnhanhEndpoint = translateDichnhanhEndpoint,
+            dichnhanhMode = translateDichnhanhMode,
+            dichnhanhType = translateDichnhanhType,
+            dichnhanhEnableAnalyze = translateDichnhanhEnableAnalyze,
+            dichnhanhEnableFanfic = translateDichnhanhEnableFanfic,
+            sangtacvietEndpoint = translateSangtacvietEndpoint
+        )
+    }
 
 }
