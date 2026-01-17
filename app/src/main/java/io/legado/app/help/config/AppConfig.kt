@@ -55,7 +55,9 @@ object AppConfig : SharedPreferences.OnSharedPreferenceChangeListener {
 
     var themeMode = appCtx.getPrefString(PreferKey.themeMode, "0")
     var AppTheme = appCtx.getPrefString(PreferKey.appTheme, "0")
-    var containerOpacity = appCtx.getPrefInt(PreferKey.containerOpacity, 100)
+
+    var swipeAnimation = appCtx.getPrefBoolean(PreferKey.swipeAnimation, true)
+
     var useDefaultCover = appCtx.getPrefBoolean(PreferKey.useDefaultCover, false)
     var optimizeRender = CanvasRecorderFactory.isSupport
             && appCtx.getPrefBoolean(PreferKey.optimizeRender, false)
@@ -1000,6 +1002,7 @@ object AppConfig : SharedPreferences.OnSharedPreferenceChangeListener {
             return str * 60 * 1000L
         }
 
+<<<<<<< HEAD
     var translateEnabled: Boolean
         get() = appCtx.getPrefBoolean(PreferKey.translateEnabled, true)
         set(value) {
@@ -1095,4 +1098,11 @@ object AppConfig : SharedPreferences.OnSharedPreferenceChangeListener {
         )
     }
 
+=======
+    var containerOpacity: Int
+        get() = appCtx.getPrefInt(PreferKey.containerOpacity, 100)
+        set(value) {
+            appCtx.putPrefInt(PreferKey.containerOpacity, value)
+        }
+>>>>>>> 1638966ba45b255cee98e12b0b6cdbb44f8a6f0b
 }
