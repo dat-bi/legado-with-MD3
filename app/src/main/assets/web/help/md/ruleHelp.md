@@ -1,4 +1,4 @@
-# 源规则帮助
+﻿# 源规则帮助
 
 * [阅读3.0(Legado)规则说明](https://mgz0227.github.io/The-tutorial-of-Legado/)
 * [书源帮助文档](https://mgz0227.github.io/The-tutorial-of-Legado/Rule/source.html)

@@ -28,6 +28,8 @@ import io.legado.app.help.book.isWebFile
 import io.legado.app.help.book.removeType
 import io.legado.app.help.book.updateTo
 import io.legado.app.help.coroutine.Coroutine
+import io.legado.app.help.translate.TranslateManager
+import io.legado.app.help.config.AppConfig
 import io.legado.app.lib.webdav.ObjectNotFoundException
 import io.legado.app.model.AudioPlay
 import io.legado.app.model.BookCover
@@ -172,25 +174,42 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
                 return
             }
             WebBook.getBookInfo(scope, bookSource, book, canReName = canReName)
-                .onSuccess(IO) {
-                    val dbBook = appDb.bookDao.getBook(book.name, book.author)
-                    if (!inBookshelf && dbBook != null && !dbBook.isNotShelf && dbBook.origin == book.origin) {
+                .onSuccess(IO) { bookInfo ->
+                    // Translate book title, author and intro
+                    try {
+                        val config = AppConfig.buildTranslateConfig()
+                        if (config.enabled) {
+                            val (translatedTitle, translatedAuthor) = TranslateManager.translateIfEnabled(bookInfo.name, bookInfo.author)
+                            if (translatedTitle != bookInfo.name) bookInfo.name = translatedTitle
+                            if (translatedAuthor != bookInfo.author) bookInfo.author = translatedAuthor
+                            bookInfo.intro?.let {
+                                if (it.isNotBlank()) {
+                                    bookInfo.intro = TranslateManager.translateText(it, config)
+                                }
+                            }
+                        }
+                    } catch (e: Exception) {
+                        AppLog.put("Book info translation error", e)
+                    }
+                    
+                    val dbBook = appDb.bookDao.getBook(bookInfo.name, bookInfo.author)
+                    if (!inBookshelf && dbBook != null && !dbBook.isNotShelf && dbBook.origin == bookInfo.origin) {
                         /**
                          * book 来自搜索时(inBookshelf == false)，搜索的书名不存在于书架，但是加载详情后，书名更新，存在同名书籍
                          * 此时 book 的数据会与数据库中的不同，需要更新 #3652 #4619
                          * book 加载详情后虽然书名作者相同，但是又可能不是数据库中(书源不同)的那本书 #3149
                          */
-                        dbBook.updateTo(it)
+                        dbBook.updateTo(bookInfo)
                         inBookshelf = true
                     }
-                    bookData.postValue(it)
+                    bookData.postValue(bookInfo)
                     if (inBookshelf) {
-                        it.save()
+                        bookInfo.save()
                     }
-                    if (it.isWebFile) {
-                        loadWebFile(it)
+                    if (bookInfo.isWebFile) {
+                        loadWebFile(bookInfo)
                     } else {
-                        loadChapter(it, runPreUpdateJs)
+                        loadChapter(bookInfo, runPreUpdateJs)
                     }
                 }.onError {
                     AppLog.put("获取书籍信息失败\n${it.localizedMessage}", it)
@@ -225,7 +244,19 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
             }
             val oldBook = book.copy()
             WebBook.getChapterList(scope, bookSource, book, runPreUpdateJs)
-                .onSuccess(IO) {
+                .onSuccess(IO) { chapters ->
+                    // Translate chapter titles
+                    try {
+                        val config = AppConfig.buildTranslateConfig()
+                        if (config.enabled) {
+                            chapters.forEach { chapter ->
+                                chapter.title = TranslateManager.translateText(chapter.title, config)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        AppLog.put("Chapter title translation error", e)
+                    }
+                    
                     if (inBookshelf) {
                         appDb.bookDao.replace(oldBook, book)
                         /**
@@ -235,11 +266,11 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
                             BookHelp.updateCacheFolder(oldBook, book)
                         }
                         appDb.bookChapterDao.delByBook(oldBook.bookUrl)
-                        appDb.bookChapterDao.insert(*it.toTypedArray())
+                        appDb.bookChapterDao.insert(*chapters.toTypedArray())
                         ReadBook.onChapterListUpdated(book)
                     }
                     bookData.postValue(book)
-                    chapterListData.postValue(it)
+                    chapterListData.postValue(chapters)
                 }.onError {
                     chapterListData.postValue(emptyList())
                     AppLog.put("获取目录失败\n${it.localizedMessage}", it)

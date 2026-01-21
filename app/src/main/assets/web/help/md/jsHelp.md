@@ -1,4 +1,4 @@
-# js变量和函数
+﻿# js变量和函数
 > 阅读使用[Rhino v1.8.0](https://github.com/mozilla/rhino) 作为JavaScript引擎以便于[调用Java类和方法](https://m.jb51.net/article/92138.htm)，查看[ECMAScript兼容性表格](https://mozilla.github.io/rhino/compat/engines.html)
 
 > [Rhino运行时](https://github.com/mozilla/rhino/blob/master/rhino/src/main/java/org/mozilla/javascript/ScriptRuntime.java)懒加载导入的Java类和方法

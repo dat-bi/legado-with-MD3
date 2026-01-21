@@ -1,4 +1,4 @@
-```java
+﻿```java
 public enum MimeTypeEnum {
 
     AAC("acc", "AAC音频", "audio/aac"),

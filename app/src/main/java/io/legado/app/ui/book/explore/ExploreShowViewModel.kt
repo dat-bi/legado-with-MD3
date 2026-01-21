@@ -3,11 +3,13 @@ package io.legado.app.ui.book.explore
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.legado.app.constant.AppLog
 import io.legado.app.data.entities.BookSource
 import io.legado.app.data.entities.SearchBook
 import io.legado.app.data.entities.rule.ExploreKind
 import io.legado.app.data.repository.ExploreRepository
 import io.legado.app.help.config.AppConfig
+import io.legado.app.help.translate.TranslateManager
 import io.legado.app.model.BookShelfState
 import io.legado.app.ui.book.search.BookKey
 import io.legado.app.utils.exploreLayoutGrid
@@ -158,6 +160,25 @@ class ExploreShowViewModel(
 
             repository.exploreBook(source, url, page)
                 .onSuccess { newBooks ->
+                    // Translate book titles and authors
+                    try {
+                        val config = AppConfig.buildTranslateConfig()
+                        if (config.enabled) {
+                            newBooks.forEach { book ->
+                                val (translatedTitle, translatedAuthor) = TranslateManager.translateIfEnabled(book.name, book.author)
+                                if (translatedTitle != book.name) book.name = translatedTitle
+                                if (translatedAuthor != book.author) book.author = translatedAuthor
+                                book.intro?.let {
+                                    if (it.isNotBlank()) {
+                                        book.intro = TranslateManager.translateText(it, config)
+                                    }
+                                }
+                            }
+                        }
+                    } catch (e: Exception) {
+                        AppLog.put("Explore book translation error", e)
+                    }
+                    
                     if (newBooks.isEmpty()) {
                         _isEndStateFlow.value = true
                     } else {

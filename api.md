@@ -1,4 +1,4 @@
-# 阅读[API](/app/src/main/java/io/legado/app/api/controller)
+﻿# 阅读[API](/app/src/main/java/io/legado/app/api/controller)
 
 ## 对于[Web](/app/src/main/java/io/legado/app/web/)的配置
 

@@ -1,4 +1,4 @@
-# Legado with MD3
+﻿# Legado with MD3
 
 <p align="left">
   <a href="https://github.com/HapeLee/legado-with-MD3">简体中文</a> ｜ 

@@ -14,6 +14,7 @@ import io.legado.app.data.repository.ReadRecordRepository
 import io.legado.app.help.AppWebDav
 import io.legado.app.help.book.BookHelp
 import io.legado.app.help.book.ContentProcessor
+import io.legado.app.help.translate.TranslateManager
 import io.legado.app.help.book.isImage
 import io.legado.app.help.book.isLocal
 import io.legado.app.help.book.isPdf
@@ -792,9 +793,13 @@ object ReadBook : CoroutineScope by MainScope(), KoinComponent {
             )
             val contents = contentProcessor
                 .getContent(book, chapter, content, includeTitle = false)
+            val (translatedTitle, translatedContent) = TranslateManager.translateIfEnabled(
+                displayTitle,
+                contents
+            )
             ensureActive()
             val textChapter = ChapterProvider.getTextChapterAsync(
-                this, book, chapter, displayTitle, contents, simulatedChapterSize
+                this, book, chapter, translatedTitle, translatedContent, simulatedChapterSize
             )
             when (val offset = chapter.index - durChapterIndex) {
                 0 -> curChapterLoadingLock.withLock {
@@ -880,8 +885,12 @@ object ReadBook : CoroutineScope by MainScope(), KoinComponent {
             )
             val contents = contentProcessor
                 .getContent(book, chapter, content, includeTitle = false)
+            val (translatedTitle, translatedContent) = TranslateManager.translateIfEnabled(
+                displayTitle,
+                contents
+            )
             val textChapter = ChapterProvider.getTextChapterAsync(
-                this@ReadBook, book, chapter, displayTitle, contents, simulatedChapterSize
+                this@ReadBook, book, chapter, translatedTitle, translatedContent, simulatedChapterSize
             )
             when (val offset = chapter.index - durChapterIndex) {
                 0 -> {

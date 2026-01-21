@@ -95,6 +95,17 @@
 		<item>Only slider</item>
 	</string-array>
 
+	<string-array name="translate_provider_entries">
+		<item>Dichngay</item>
+		<item>Dichnhanh</item>
+		<item>Sangtacviet</item>
+	</string-array>
+	<string-array name="translate_provider_values">
+		<item>DICHNGAY</item>
+		<item>DICHNHANH</item>
+		<item>SANGTACVIET</item>
+	</string-array>
+
 	<string-array name="title_bar_mode">
 		<item>Show in TopBar</item>
 		<item>Show in another line</item>
@@ -131,7 +142,7 @@
 	<string-array name="icon_names" tools:ignore="Typos">
 		<item>iconMain</item>
 		<item>iconWhite</item>
-        <item>icon0</item>
+		<item>icon0</item>
 		<item>icon1</item>
 		<item>icon2</item>
 		<item>icon3</item>
@@ -193,25 +204,25 @@
 		<item>Off</item>
 	</string-array>
 
-    <string-array name="paletteStyle">
-        <item>TonalSpot</item>
-        <item>Neutral</item>
-        <item>Vibrant</item>
-        <item>Expressive</item>
-        <item>Rainbow</item>
-        <item>FruitSalad</item>
-        <item>Monochrome</item>
-        <item>Fidelity</item>
-        <item>Content</item>
-    </string-array>
+	<string-array name="paletteStyle">
+		<item>TonalSpot</item>
+		<item>Neutral</item>
+		<item>Vibrant</item>
+		<item>Expressive</item>
+		<item>Rainbow</item>
+		<item>FruitSalad</item>
+		<item>Monochrome</item>
+		<item>Fidelity</item>
+		<item>Content</item>
+	</string-array>
 
-    <string-array name="composeEngine">
-        <item>Material Design</item>
-        <item>SaltUI</item>
-        <item>Miuix</item>
-    </string-array>
+	<string-array name="composeEngine">
+		<item>Material Design</item>
+		<item>SaltUI</item>
+		<item>Miuix</item>
+	</string-array>
 
-    <string-array name="customMode">
+	<string-array name="customMode">
 		<item>Global</item>
 		<item>Accent</item>
 	</string-array>
@@ -271,7 +282,7 @@
 		<item>@string/bookshelf_px_5</item>
 	</string-array>
 
-    <string-array name="label_vis_mode" >
+	<string-array name="label_vis_mode">
 		<item>Auto</item>
 		<item>Selected</item>
 		<item>Labeled</item>

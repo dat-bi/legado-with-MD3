@@ -1002,7 +1002,6 @@ object AppConfig : SharedPreferences.OnSharedPreferenceChangeListener {
             return str * 60 * 1000L
         }
 
-<<<<<<< HEAD
     var translateEnabled: Boolean
         get() = appCtx.getPrefBoolean(PreferKey.translateEnabled, true)
         set(value) {
@@ -1010,13 +1009,13 @@ object AppConfig : SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
     var translateProvider: String
-        get() = appCtx.getPrefString(PreferKey.translateProvider, TranslateProvider.DICHNGAY.name)
+        get() = (appCtx.getPrefString(PreferKey.translateProvider, TranslateProvider.SANGTACVIET.name) ?: TranslateProvider.SANGTACVIET.name)!!
         set(value) {
             appCtx.putPrefString(PreferKey.translateProvider, value)
         }
 
     var translateTargetLang: String
-        get() = appCtx.getPrefString(PreferKey.translateTargetLang, "vi")
+        get() = (appCtx.getPrefString(PreferKey.translateTargetLang, "vi") ?: "vi")!!
         set(value) {
             appCtx.putPrefString(PreferKey.translateTargetLang, value)
         }
@@ -1034,25 +1033,25 @@ object AppConfig : SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
     var translateDichngayEndpoint: String
-        get() = appCtx.getPrefString(PreferKey.translateDichngayEndpoint, "https://dichngay.com/translate/text")
+        get() = (appCtx.getPrefString(PreferKey.translateDichngayEndpoint, "https://dichngay.com/translate/text") ?: "https://dichngay.com/translate/text")!!
         set(value) {
             appCtx.putPrefString(PreferKey.translateDichngayEndpoint, value)
         }
 
     var translateDichnhanhEndpoint: String
-        get() = appCtx.getPrefString(PreferKey.translateDichnhanhEndpoint, "https://api.dichnhanh.com/")
+        get() = (appCtx.getPrefString(PreferKey.translateDichnhanhEndpoint, "https://api.dichnhanh.com/") ?: "https://api.dichnhanh.com/")!!
         set(value) {
             appCtx.putPrefString(PreferKey.translateDichnhanhEndpoint, value)
         }
 
     var translateDichnhanhMode: String
-        get() = appCtx.getPrefString(PreferKey.translateDichnhanhMode, "vi")
+        get() = (appCtx.getPrefString(PreferKey.translateDichnhanhMode, "vi") ?: "vi")!!
         set(value) {
             appCtx.putPrefString(PreferKey.translateDichnhanhMode, value)
         }
 
     var translateDichnhanhType: String
-        get() = appCtx.getPrefString(PreferKey.translateDichnhanhType, "Ancient")
+        get() = (appCtx.getPrefString(PreferKey.translateDichnhanhType, "Ancient") ?: "Ancient")!!
         set(value) {
             appCtx.putPrefString(PreferKey.translateDichnhanhType, value)
         }
@@ -1070,10 +1069,10 @@ object AppConfig : SharedPreferences.OnSharedPreferenceChangeListener {
         }
 
     var translateSangtacvietEndpoint: String
-        get() = appCtx.getPrefString(
+        get() = (appCtx.getPrefString(
             PreferKey.translateSangtacvietEndpoint,
             "http://14.225.254.182/index.php?ngmar=trans&langhint=chinese"
-        )
+        ) ?: "http://14.225.254.182/index.php?ngmar=trans&langhint=chinese")!!
         set(value) {
             appCtx.putPrefString(PreferKey.translateSangtacvietEndpoint, value)
         }
@@ -1097,12 +1096,9 @@ object AppConfig : SharedPreferences.OnSharedPreferenceChangeListener {
             sangtacvietEndpoint = translateSangtacvietEndpoint
         )
     }
-
-=======
     var containerOpacity: Int
         get() = appCtx.getPrefInt(PreferKey.containerOpacity, 100)
         set(value) {
             appCtx.putPrefInt(PreferKey.containerOpacity, value)
         }
->>>>>>> 1638966ba45b255cee98e12b0b6cdbb44f8a6f0b
 }
