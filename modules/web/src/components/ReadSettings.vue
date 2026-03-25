@@ -4,11 +4,11 @@
     :style="popupTheme"
     :class="{ night: isNight, day: !isNight }"
   >
-    <div class="settings-title">设置</div>
+    <div class="settings-title">Cài đặt</div>
     <div class="setting-list">
       <ul>
         <li class="theme-list">
-          <i>阅读主题</i>
+          <i>Giao diện</i>
           <span
             class="theme-item"
             v-for="(themeColor, index) in themeColors"
@@ -22,7 +22,7 @@
           >
         </li>
         <li class="font-list">
-          <i>正文字体</i>
+          <i>Phông chữ</i>
           <span
             class="font-item"
             v-for="(font, index) in fonts"
@@ -33,13 +33,13 @@
           >
         </li>
         <li class="font-list">
-          <i>自定字体</i>
-          <el-tooltip effect="dark" content="自定义的字体名称" placement="top">
+          <i>Phông tùy chỉnh</i>
+          <el-tooltip effect="dark" content="Tên phông chữ tùy chỉnh" placement="top">
             <input
               type="text"
               class="font-item font-item-input"
               v-model="customFontName"
-              placeholder="请输入自定义的字体名称"
+              placeholder="Nhập tên phông chữ"
             />
           </el-tooltip>
 
@@ -50,29 +50,29 @@
             v-model:visible="customFontSavePopVisible"
           >
             <p>
-              已经安装在您的设备上的字体请确认输入的字体名称完整无误，或者从网络下载字体。
+              Phông chữ đã cài trên thiết bị, vui lòng nhập chính xác tên, hoặc tải từ mạng.
             </p>
             <div style="text-align: right; margin: 0">
               <el-button
                 size="small"
                 plain
                 @click="customFontSavePopVisible = false"
-                >取消</el-button
+                >Hủy</el-button
               >
               <el-button type="primary" size="small" @click="setCustomFont()"
-                >确定</el-button
+                >OK</el-button
               >
               <el-button type="primary" size="small" @click="loadFontFromURL()"
-                >网络下载</el-button
+                >Tải về</el-button
               >
             </div>
             <template #reference>
-              <span type="text" class="font-item">保存</span>
+              <span type="text" class="font-item">Lưu</span>
             </template>
           </el-popover>
         </li>
         <li class="font-size">
-          <i>字体大小</i>
+          <i>Cỡ chữ</i>
           <div class="resize">
             <span class="less" @click="lessFontSize"
               ><em class="iconfont">&#58966;</em></span
@@ -84,7 +84,7 @@
           </div>
         </li>
         <li class="letter-spacing">
-          <i>字距</i>
+          <i>Khoảng cách chữ</i>
           <div class="resize">
             <span class="less" @click="lessLetterSpacing"
               ><em class="iconfont">&#58966;</em></span
@@ -96,7 +96,7 @@
           </div>
         </li>
         <li class="line-spacing">
-          <i>行距</i>
+          <i>Khoảng cách dòng</i>
           <div class="resize">
             <span class="less" @click="lessLineSpacing"
               ><em class="iconfont">&#58966;</em></span
@@ -108,7 +108,7 @@
           </div>
         </li>
         <li class="paragraph-spacing">
-          <i>段距</i>
+          <i>Khoảng cách đoạn</i>
           <div class="resize">
             <div class="resize">
               <span class="less" @click="lessParagraphSpacing"
@@ -123,7 +123,7 @@
           </div>
         </li>
         <li class="read-width" v-if="!store.miniInterface">
-          <i>页面宽度</i>
+          <i>Chiều rộng trang</i>
           <div class="resize">
             <span class="less" @click="lessReadWidth"
               ><em class="iconfont">&#58965;</em></span
@@ -135,7 +135,7 @@
           </div>
         </li>
         <li class="paragraph-spacing">
-          <i>翻页速度</i>
+          <i>Tốc độ lật trang</i>
           <div class="resize">
             <div class="resize">
               <span class="less" @click="lessJumpDuration">
@@ -150,20 +150,37 @@
           </div>
         </li>
         <li class="infinite-loading">
-          <i>无限加载</i>
+          <i>Tải vô tận</i>
           <span
             class="infinite-loading-item"
             :key="0"
             :class="{ selected: infiniteLoading == false }"
             @click="setInfiniteLoading(false)"
-            >关闭</span
+            >Tắt</span
           >
           <span
             class="infinite-loading-item"
             :key="1"
             :class="{ selected: infiniteLoading == true }"
             @click="setInfiniteLoading(true)"
-            >开启</span
+            >Bật</span
+          >
+        </li>
+        <li class="translate-mode">
+          <i>Chế độ dịch</i>
+          <span
+            class="translate-mode-item"
+            :key="0"
+            :class="{ selected: isTranslateMode == false }"
+            @click="setTranslateMode(false)"
+            >Tắt</span
+          >
+          <span
+            class="translate-mode-item"
+            :key="1"
+            :class="{ selected: isTranslateMode == true }"
+            @click="setTranslateMode(true)"
+            >Bật</span
           >
         </li>
       </ul>
@@ -231,7 +248,7 @@ const setTheme = (theme: number) => {
 }
 
 //预置字体
-const fonts = ref(['雅黑', '宋体', '楷书'])
+const fonts = ref(['Mặc định', 'Google Sans', 'Roboto', 'YaHei'])
 const setFont = (font: number) => {
   store.config.font = font
 }
@@ -249,19 +266,19 @@ const setCustomFont = () => {
 // 加载网络字体
 const loadFontFromURL = () => {
   customFontSavePopVisible.value = false
-  ElMessageBox.prompt('请输入 字体网络链接', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+  ElMessageBox.prompt('Nhập link phông chữ', 'Gợi ý', {
+    confirmButtonText: 'OK',
+    cancelButtonText: 'Hủy',
     inputPattern: /^https?:.+$/,
-    inputErrorMessage: 'url 形式不正确',
+    inputErrorMessage: 'URL không đúng định dạng',
     beforeClose: (action, instance, done) => {
       if (action === 'confirm') {
         instance.confirmButtonLoading = true
-        instance.confirmButtonText = '下载中……'
+        instance.confirmButtonText = 'Đang tải...'
         // instance.inputValue
         const url = instance.inputValue
         if (typeof FontFace !== 'function') {
-          ElMessage.error('浏览器不支持FontFace')
+          ElMessage.error('Trình duyệt không hỗ trợ FontFace')
           return done()
         }
         const fontface = new FontFace(customFontName.value, `url("${url}")`)
@@ -271,14 +288,14 @@ const loadFontFromURL = () => {
           //API.getBookShelf()
           .then(function () {
             instance.confirmButtonLoading = false
-            ElMessage.info('字体加载成功！')
+            ElMessage.info('Tải phông chữ thành công!')
             setCustomFont()
             done()
           })
           .catch(function (error) {
             instance.confirmButtonLoading = false
-            instance.confirmButtonText = '确定'
-            ElMessage.error('下载失败，请检查您输入的 url')
+            instance.confirmButtonText = 'OK'
+            ElMessage.error('Tải thất bại, kiểm tra lại URL')
             throw error
           })
       } else {
@@ -354,6 +371,12 @@ const infiniteLoading = computed(() => {
 const setInfiniteLoading = (loading: boolean) => {
   store.config.infiniteLoading = loading
 }
+
+//Translate Mode
+const isTranslateMode = computed(() => store.isTranslateMode)
+const setTranslateMode = (enable: boolean) => {
+  store.setTranslateMode(enable)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -395,31 +418,35 @@ const setInfiniteLoading = (loading: boolean) => {
 
       li {
         list-style: none outside none;
+        display: flex; /* Use flexbox for alignment */
+        align-items: center; /* Vertically center */
+        margin-bottom: 24px; /* Space between items (replacing individual margin-tops) */
+        flex-wrap: wrap; /* Allow wrapping on very small screens if needed */
 
         i {
           font:
             12px / 16px PingFangSC-Regular,
             '-apple-system',
             Simsun;
-          display: inline-block;
-          min-width: 48px;
+          display: block; /* Flex item */
+          min-width: 80px; /* Increased from 48px to accommodate VN text */
           margin-right: 16px;
-          vertical-align: middle;
           color: #666;
+          white-space: nowrap; /* Prevent label wrapping if possible */
         }
 
         .theme-item {
-          line-height: 32px;
+          /* line-height: 32px; removed line-height dependency */
           width: 34px;
           height: 34px;
           margin-right: 16px;
-          margin-top: 5px;
+          /* margin-top: 5px; removed */
           border-radius: 100%;
-          display: inline-block;
+          display: flex; /* Centering content */
+          justify-content: center;
+          align-items: center;
           cursor: pointer;
-          text-align: center;
-          vertical-align: middle;
-
+          
           .iconfont {
             display: none;
           }
@@ -435,21 +462,29 @@ const setInfiniteLoading = (loading: boolean) => {
       }
 
       .font-list,
-      .infinite-loading {
-        margin-top: 28px;
+      .infinite-loading,
+      .font-size,
+      .read-width,
+      .letter-spacing,
+      .line-spacing,
+      .paragraph-spacing {
+         margin-top: 0; /* Handled by li margin-bottom */
 
         .font-item,
-        .infinite-loading-item {
-          width: 78px;
+        .infinite-loading-item,
+        .translate-mode-item {
+          width: auto; /* Allow auto width for longer font names */
+          min-width: 78px;
+          padding: 0 10px; /* Add padding for auto width */
           height: 34px;
           cursor: pointer;
           margin-right: 16px;
           border-radius: 2px;
-          text-align: center;
-          vertical-align: middle;
-          display: inline-block;
+          display: inline-flex; /* Use inline-flex for centering */
+          justify-content: center;
+          align-items: center;
           font:
-            14px / 34px PingFangSC-Regular,
+            14px / 1.2 PingFangSC-Regular, /* Normalized line-height */
             HelveticaNeue-Light,
             'Helvetica Neue Light',
             'Microsoft YaHei',
@@ -465,10 +500,13 @@ const setInfiniteLoading = (loading: boolean) => {
         }
 
         .font-item:hover,
-        .infinite-loading-item:hover {
+        .infinite-loading-item:hover,
+        .translate-mode-item:hover {
           border: 1px solid #ed4259;
           color: #ed4259;
         }
+        
+        /* Specific margin fix for the first item if needed, but handled by flex above */
       }
 
       .font-size,
@@ -476,23 +514,23 @@ const setInfiniteLoading = (loading: boolean) => {
       .letter-spacing,
       .line-spacing,
       .paragraph-spacing {
-        margin-top: 28px;
 
         .resize {
-          display: inline-block;
-          width: 274px;
+          display: flex; /* Flexbox for the resize controls */
+          align-items: center;
+          width: auto; /* Allow flexible width */
+          min-width: 200px; /* Min width to prevent collapse */
           height: 34px;
-          vertical-align: middle;
           border-radius: 2px;
 
           span {
-            width: 89px;
-            height: 34px;
-            line-height: 34px;
-            display: inline-block;
+            flex: 1; /* Distribute space */
+            height: 100%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
-            text-align: center;
-            vertical-align: middle;
+            padding: 0 10px;
 
             em {
               font-style: normal;
@@ -508,11 +546,14 @@ const setInfiniteLoading = (loading: boolean) => {
             color: #a6a6a6;
             font-weight: 400;
             font-family: FZZCYSK;
+            width: auto;
+            min-width: 60px; /* Ensure value is visible */
           }
 
           b {
             display: inline-block;
             height: 20px;
+            width: 1px; /* Explicit width for separator */
             vertical-align: middle;
           }
         }
@@ -535,9 +576,11 @@ const setInfiniteLoading = (loading: boolean) => {
   }
 
   :deep(.font-list),
-  .infinite-loading {
+  .infinite-loading,
+  .translate-mode {
     .font-item,
-    .infinite-loading-item {
+    .infinite-loading-item,
+    .translate-mode-item {
       border: 1px solid #666;
       background: rgba(45, 45, 45, 0.5);
     }
@@ -568,9 +611,11 @@ const setInfiniteLoading = (loading: boolean) => {
   }
 
   :deep(.font-list),
-  .infinite-loading {
+  .infinite-loading,
+  .translate-mode {
     .font-item,
-    .infinite-loading-item {
+    .infinite-loading-item,
+    .translate-mode-item {
       background: rgba(255, 255, 255, 0.5);
       border: 1px solid rgba(0, 0, 0, 0.1);
     }

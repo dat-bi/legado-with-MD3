@@ -56,6 +56,7 @@ import io.legado.app.utils.putPrefBoolean
 import io.legado.app.utils.startActivity
 import io.legado.app.utils.themeColor
 import io.legado.app.utils.visible
+import io.legado.app.utils.setTranslatedText
 import splitties.views.onClick
 
 /**
@@ -785,23 +786,26 @@ class ReadMenu @JvmOverloads constructor(
 
     fun upBookView() {
         val bookName = ReadBook.book?.name ?: ""
+        val translatedBookName = if (io.legado.app.utils.TranslateUtils.isTranslateEnabled()) {
+            kotlinx.coroutines.runBlocking { io.legado.app.utils.TranslateUtils.translateMeta(bookName) } ?: bookName
+        } else bookName
 
         val mode = AppConfig.titleBarMode?.toInt()
 
         when (mode) {
             0 -> { // 在应用栏上显示
-                binding.titleBar.title = bookName
+                binding.titleBar.title = translatedBookName
                 binding.llBook.visible()
                 binding.tvBookName.gone()
             }
             1 -> { // 在独立行上显示
                 binding.titleBar.title = " "
-                binding.tvBookName.text = bookName
+                binding.tvBookName.text = translatedBookName
                 binding.llBook.visible()
                 binding.tvBookName.visible()
             }
             2 -> { // 仅显示标题
-                binding.titleBar.title = bookName
+                binding.titleBar.title = translatedBookName
                 binding.llBook.gone()
             }
             3 -> { // 不显示
@@ -810,13 +814,13 @@ class ReadMenu @JvmOverloads constructor(
             }
             else -> {
                 binding.titleBar.title = " "
-                binding.tvBookName.text = bookName
+                binding.tvBookName.text = translatedBookName
                 binding.llBook.visible()
             }
         }
 
         ReadBook.curTextChapter?.let {
-            binding.tvChapterName.text = it.title
+            binding.tvChapterName.setTranslatedText(it.title)
             if (!ReadBook.isLocalBook) {
                 binding.tvChapterUrl.text = it.chapter.getAbsoluteURL()
                 //binding.tvChapterUrl.visible()

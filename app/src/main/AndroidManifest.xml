@@ -343,6 +343,12 @@
             android:enableOnBackInvokedCallback="true"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true" />
+        <!-- 自定义词典管理 -->
+        <activity
+            android:name=".ui.dict.manage.DictManageActivity"
+            android:enableOnBackInvokedCallback="true"
+            android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="true" />
         <!-- 文件管理 -->
         <activity
             android:name=".ui.file.FileManageActivity"

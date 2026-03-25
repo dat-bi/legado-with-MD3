@@ -35,7 +35,6 @@ android {
     kotlin {
         jvmToolchain {
             languageVersion.set(JavaLanguageVersion.of(21))
-            vendor.set(JvmVendorSpec.ADOPTIUM)
         }
     }
 
@@ -277,4 +276,7 @@ dependencies {
     implementation(libs.material.kolor)
     implementation(libs.haze.core)
     implementation(libs.haze.materials)
+
+    // ONNX Runtime for AI model inference
+    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.19.2")
 }

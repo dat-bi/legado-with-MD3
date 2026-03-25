@@ -131,6 +131,7 @@ import io.legado.app.utils.navigationBarGravity
 import io.legado.app.utils.observeEvent
 import io.legado.app.utils.observeEventSticky
 import io.legado.app.utils.postEvent
+import io.legado.app.utils.putPrefBoolean
 import io.legado.app.utils.showDialogFragment
 import io.legado.app.utils.showHelp
 import io.legado.app.utils.startActivity
@@ -692,6 +693,12 @@ class ReadBookActivity : BaseReadBookActivity(),
 
             R.id.menu_reverse_content -> ReadBook.book?.let {
                 viewModel.reverseContent(it)
+            }
+
+            R.id.menu_translate -> {
+                val isTranslateEnabled = getPrefBoolean(PreferKey.translateEnable, false)
+                putPrefBoolean(PreferKey.translateEnable, !isTranslateEnabled)
+                ReadBook.loadContent(false)
             }
 
             R.id.menu_set_charset -> showCharsetConfig()

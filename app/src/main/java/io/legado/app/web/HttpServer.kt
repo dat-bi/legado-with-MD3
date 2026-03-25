@@ -77,7 +77,7 @@ class HttpServer(port: Int) : NanoHTTPD(port) {
                     returnData = when (uri) {
                         "/getBookSource" -> BookSourceController.getSource(parameters)
                         "/getBookSources" -> BookSourceController.sources
-                        "/getBookshelf" -> BookController.bookshelf
+                        "/getBookshelf" -> BookController.getBookshelf(parameters["translate"]?.firstOrNull()?.toBoolean() ?: false)
                         "/getChapterList" -> BookController.getChapterList(parameters)
                         "/refreshToc" -> BookController.refreshToc(parameters)
                         "/getBookContent" -> BookController.getBookContent(parameters)

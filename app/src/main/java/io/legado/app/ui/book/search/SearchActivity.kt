@@ -57,6 +57,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import splitties.init.appCtx
 import kotlin.math.abs
+import io.legado.app.service.AITranslationService
 
 class SearchActivity : VMBaseActivity<ActivityBookSearchBinding, SearchViewModel>(),
     BookAdapter.CallBack,
@@ -87,6 +88,7 @@ class SearchActivity : VMBaseActivity<ActivityBookSearchBinding, SearchViewModel
     private var historyFlowJob: Job? = null
     private var booksFlowJob: Job? = null
     private var precisionSearchMenuItem: MenuItem? = null
+    private var aiTranslationMenuItem: MenuItem? = null
     private var isManualStopSearch = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,6 +112,8 @@ class SearchActivity : VMBaseActivity<ActivityBookSearchBinding, SearchViewModel
         this.menu = menu
         precisionSearchMenuItem = menu.findItem(R.id.menu_precision_search)
         precisionSearchMenuItem?.isChecked = getPrefBoolean(PreferKey.precisionSearch)
+        aiTranslationMenuItem = menu.findItem(R.id.menu_ai_translation)
+        aiTranslationMenuItem?.isChecked = getPrefBoolean("aiModelEnabled", false)
         return super.onCompatCreateOptionsMenu(menu)
     }
 
@@ -126,6 +130,19 @@ class SearchActivity : VMBaseActivity<ActivityBookSearchBinding, SearchViewModel
                 putPrefBoolean(PreferKey.precisionSearch, newValue)
                 precisionSearchMenuItem?.isChecked = newValue
                 binding.chipPrecisionSearch.isChecked = newValue
+                binding.searchView.text.toString().trim().let {
+                    binding.searchView.setText(it)
+                }
+            }
+            R.id.menu_ai_translation -> {
+                val newState = !getPrefBoolean("aiModelEnabled", false)
+                putPrefBoolean("aiModelEnabled", newState)
+                aiTranslationMenuItem?.isChecked = newState
+                if (newState) {
+                    AITranslationService.start(this)
+                } else {
+                    AITranslationService.stop(this)
+                }
                 binding.searchView.text.toString().trim().let {
                     binding.searchView.setText(it)
                 }
@@ -259,7 +276,23 @@ class SearchActivity : VMBaseActivity<ActivityBookSearchBinding, SearchViewModel
             isManualStopSearch = false
             viewModel.saveSearchKey(key)
             viewModel.searchKey = ""
-            viewModel.search(key)
+            if (getPrefBoolean("aiModelEnabled", false)) {
+                lifecycleScope.launch {
+                    try {
+                        val aiService = AITranslationService.getInstance()
+                        if (aiService?.isModelReady() == true) {
+                            val translatedQuery = aiService.translateVietnameseToChinese(key)
+                            viewModel.search(translatedQuery)
+                        } else {
+                            viewModel.search(key)
+                        }
+                    } catch (e: Exception) {
+                        viewModel.search(key)
+                    }
+                }
+            } else {
+                viewModel.search(key)
+            }
             visibleInputHelp()
             searchView.hide()
         }

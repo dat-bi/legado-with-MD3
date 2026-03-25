@@ -11,10 +11,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import io.legado.app.utils.putPrefBoolean
+import io.legado.app.utils.getPrefBoolean
 
 data class MyUiState(
     val isWebServiceRun: Boolean = false,
-    val webServiceAddress: String = ""
+    val webServiceAddress: String = "",
+    val isTranslateEnable: Boolean = false
 )
 
 sealed class PrefClickEvent {
@@ -23,6 +26,7 @@ sealed class PrefClickEvent {
     data class ShowMd(val title: String, val path: String) : PrefClickEvent()
     data class StartActivity(val destination: Class<*>, val configTag: String? = null) : PrefClickEvent()
     object ToggleWebService : PrefClickEvent()
+    object ToggleTranslate : PrefClickEvent()
     object ExitApp : PrefClickEvent()
 }
 
@@ -33,7 +37,8 @@ class MyViewModel(
     private val _uiState = MutableStateFlow(
         MyUiState(
             isWebServiceRun = WebService.isRun,
-            webServiceAddress = WebService.hostAddress
+            webServiceAddress = WebService.hostAddress,
+            isTranslateEnable = application.getPrefBoolean(io.legado.app.constant.PreferKey.translateEnable, false)
         )
     )
     val uiState: StateFlow<MyUiState> = _uiState.asStateFlow()
@@ -64,6 +69,11 @@ class MyViewModel(
                     _uiState.update { it.copy(isWebServiceRun = false, webServiceAddress = "") }
                 }
 
+            }
+            PrefClickEvent.ToggleTranslate -> {
+                val newState = !_uiState.value.isTranslateEnable
+                getApplication<Application>().putPrefBoolean(io.legado.app.constant.PreferKey.translateEnable, newState)
+                _uiState.update { it.copy(isTranslateEnable = newState) }
             }
             else -> Unit
         }

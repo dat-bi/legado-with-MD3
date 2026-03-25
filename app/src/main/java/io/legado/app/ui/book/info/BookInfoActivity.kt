@@ -89,6 +89,7 @@ import io.legado.app.utils.startActivity
 import io.legado.app.utils.toastOnUi
 import io.legado.app.utils.viewbindingdelegate.viewBinding
 import io.legado.app.utils.visible
+import io.legado.app.utils.setTranslatedText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
@@ -434,21 +435,21 @@ class BookInfoActivity :
     private fun showBook(book: Book) = binding.run {
         showCover(book)
         addColorScheme(binding.ivCover.drawable)
-        tvName.text = book.name
+        tvName.setTranslatedText(book.name)
         tvRemark.text = book.remark
         if (book.remark.isNullOrEmpty())
             cdRemark.gone()
         else
             cdRemark.visible()
-        tvAuthor.text = getString(R.string.author_show, book.getRealAuthor())
-        tvOrigin.text = getString(R.string.origin_show, book.originName)
-        tvLasted.text = getString(R.string.lasted_show, book.latestChapterTitle)
+        tvAuthor.setTranslatedText(book.getRealAuthor()) { getString(R.string.author_show, it) }
+        tvOrigin.setTranslatedText(book.originName) { getString(R.string.origin_show, it) }
+        tvLasted.setTranslatedText(book.latestChapterTitle) { getString(R.string.lasted_show, it) }
         tvChapter.text = getString(R.string.read_chapter_total, book.totalChapterNum)
         if (book.durChapterIndex + 1 == book.totalChapterNum)
             tvChapterIndex.text = "已读完"
         else
             tvChapterIndex.text = getString(R.string.read_chapter_index, book.durChapterIndex + 1)
-        tvDetail.text = book.getDisplayIntro()
+        tvDetail.setTranslatedText(book.getDisplayIntro())
         tvToc.visible(!book.isWebFile)
         upTvBookshelf()
         upKinds(book)
@@ -708,8 +709,8 @@ class BookInfoActivity :
 
             else -> {
                 book?.let {
-                    binding.tvToc.text = getString(R.string.toc_s, it.durChapterTitle)
-                    binding.tvLasted.text = getString(R.string.lasted_show, it.latestChapterTitle)
+                    binding.tvToc.setTranslatedText(it.durChapterTitle) { title -> getString(R.string.toc_s, title) }
+                    binding.tvLasted.setTranslatedText(it.latestChapterTitle) { title -> getString(R.string.lasted_show, title) }
                     binding.tvTocView.text = getString(R.string.view_toc)
                     binding.tvTocView.isEnabled = true
                 }

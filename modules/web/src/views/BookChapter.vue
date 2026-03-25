@@ -1,91 +1,125 @@
 <template>
   <div
-    class="chapter-wrapper"
+    class="min-h-screen w-full relative transition-colors duration-500 overflow-x-hidden"
     :style="bodyTheme"
-    :class="{ night: isNight, day: !isNight }"
     @click="showToolBar = !showToolBar"
   >
-    <div class="tool-bar" :style="leftBarTheme">
-      <div class="tools">
-        <el-popover
-          placement="right"
-          :width="popupWidth"
-          trigger="click"
-          :show-arrow="false"
-          v-model:visible="popCataVisible"
-          popper-class="pop-cata"
-        >
-          <PopCatalog @getContent="getContent" class="popup" />
-          <template #reference>
-            <div class="tool-icon" :class="{ 'no-point': false }">
-              <div class="iconfont">&#58905;</div>
-              <div class="icon-text">目录</div>
-            </div>
-          </template>
-        </el-popover>
-        <el-popover
-          placement="right"
-          :width="popupWidth"
-          trigger="click"
-          :show-arrow="false"
-          v-model:visible="readSettingsVisible"
-          popper-class="pop-setting"
-        >
-          <read-settings class="popup" />
-          <template #reference>
-            <div class="tool-icon" :class="{ 'no-point': noPoint }">
-              <div class="iconfont">&#58971;</div>
-              <div class="icon-text">设置</div>
-            </div>
-          </template>
-        </el-popover>
-        <div class="tool-icon" @click="toShelf">
-          <div class="iconfont">&#58892;</div>
-          <div class="icon-text">书架</div>
+    <!-- Top Progress Bar -->
+    <div class="fixed top-0 left-0 h-1 bg-blue-500/20 w-full z-50">
+       <div class="h-full bg-gradient-to-r from-blue-400 to-indigo-500 transition-all duration-500 pointer-events-none rounded-r-full" :style="{ width: readingProgressPercent }"></div>
+    </div>
+
+    <!-- ═══ TOP HEADER BAR ═══ -->
+    <div 
+      class="fixed top-0 left-0 right-0 z-40 transition-all duration-300"
+      :class="showToolBar ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'"
+      @click.stop
+    >
+      <div 
+        class="flex items-center justify-between px-4 py-3 backdrop-blur-xl border-b border-black/5 shadow-lg"
+        :style="{ background: popupColor }"
+      >
+        <!-- Left: Back to shelf -->
+        <div class="flex items-center gap-3">
+          <button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/10 transition-colors" @click="toShelf">
+            <span class="iconfont text-xl">&#58920;</span>
+          </button>
+          <div class="hidden sm:block max-w-[200px] md:max-w-[300px] truncate text-sm font-medium opacity-80">
+            {{ catalog[chapterIndex]?.title || '' }}
+          </div>
         </div>
-        <div class="tool-icon" :class="{ 'no-point': noPoint }" @click="toTop">
-          <div class="iconfont">&#58914;</div>
-          <div class="icon-text">顶部</div>
+        
+        <!-- Center: Chapter info (mobile) -->
+        <div class="sm:hidden text-sm font-medium opacity-80 truncate max-w-[160px]">
+          {{ catalog[chapterIndex]?.title || '' }}
         </div>
-        <div
-          class="tool-icon"
-          :class="{ 'no-point': noPoint }"
-          @click="toBottom"
-        >
-          <div class="iconfont">&#58915;</div>
-          <div class="icon-text">底部</div>
+
+        <!-- Right: Action buttons -->
+        <div class="flex items-center gap-1">
+          <el-popover
+            placement="bottom-end"
+            :width="popupWidth"
+            trigger="click"
+            :show-arrow="false"
+            v-model:visible="popCataVisible"
+            popper-class="pop-cata"
+          >
+            <PopCatalog @getContent="getContent" class="popup" />
+            <template #reference>
+              <button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/10 transition-colors" :class="{ 'opacity-50 pointer-events-none': false }">
+                <span class="iconfont text-lg">&#58905;</span>
+              </button>
+            </template>
+          </el-popover>
+          
+          <el-popover
+            placement="bottom-end"
+            :width="popupWidth"
+            trigger="click"
+            :show-arrow="false"
+            v-model:visible="readSettingsVisible"
+            popper-class="pop-setting"
+          >
+            <read-settings class="popup" />
+            <template #reference>
+              <button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/10 transition-colors" :class="{ 'opacity-50 pointer-events-none': noPoint }">
+                <span class="iconfont text-lg">&#58971;</span>
+              </button>
+            </template>
+          </el-popover>
+          
+          <button class="hidden md:flex w-10 h-10 items-center justify-center rounded-full hover:bg-black/10 transition-colors" :class="{ 'opacity-50 pointer-events-none': noPoint }" @click="toTop">
+            <span class="iconfont text-lg">&#58914;</span>
+          </button>
         </div>
       </div>
     </div>
-    <div class="read-bar" :style="rightBarTheme">
-      <div class="tools">
-        <div
-          class="tool-icon"
-          :class="{ 'no-point': noPoint }"
+
+    <!-- ═══ BOTTOM NAVIGATION BAR ═══ -->
+    <div 
+      class="fixed bottom-0 left-0 right-0 z-40 transition-all duration-300"
+      :class="showToolBar ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'"
+      @click.stop
+    >
+      <div 
+        class="flex items-center justify-between px-2 py-2 backdrop-blur-xl border-t border-black/5 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]"
+        :style="{ background: popupColor }"
+      >
+        <button
+          class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl hover:bg-black/5 transition-colors"
+          :class="{ 'opacity-40 pointer-events-none': noPoint }"
           @click="toPreChapter"
         >
-          <div class="iconfont">&#58920;</div>
-          <span v-if="miniInterface">上一章</span>
+          <span class="iconfont text-lg">&#58920;</span>
+          <span class="text-sm font-medium">Chương trước</span>
+        </button>
+        
+        <!-- Chapter indicator -->
+        <div class="px-4 text-xs text-center opacity-60 min-w-[80px]">
+          <div class="font-semibold">{{ chapterIndex + 1 }}/{{ catalog.length }}</div>
         </div>
-        <div
-          class="tool-icon"
-          :class="{ 'no-point': noPoint }"
+        
+        <button
+          class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl hover:bg-black/5 transition-colors"
+          :class="{ 'opacity-40 pointer-events-none': noPoint }"
           @click="toNextChapter"
         >
-          <span v-if="miniInterface">下一章</span>
-          <div class="iconfont">&#58913;</div>
-        </div>
+          <span class="text-sm font-medium">Chương sau</span>
+          <span class="iconfont text-lg">&#58913;</span>
+        </button>
       </div>
     </div>
-    <div class="chapter-bar"></div>
-    <div class="chapter" ref="content" :style="chapterTheme">
-      <div class="content">
-        <div class="top-bar" ref="top"></div>
+
+    <!-- ═══ IMMERSIVE READING AREA ═══ -->
+    <div class="mx-auto min-h-screen flex flex-col transition-all duration-500 ease-in-out px-5 md:px-10 pt-4 pb-20" ref="content" :style="chapterTheme">
+      <div class="w-full text-lg md:text-xl leading-[1.9] text-justify tracking-wide">
+        <div class="w-full h-16" ref="top"></div>
         <div
           v-for="data in chapterData"
           :key="data.index"
           :chapterIndex="data.index"
           ref="chapter"
+          class="chapter-content-block animate-fade-in"
         >
           <chapter-content
             ref="chapterRef"
@@ -99,25 +133,28 @@
             v-if="showContent"
           />
         </div>
-        <div class="loading" ref="loading"></div>
-        <div class="bottom-bar" ref="bottom"></div>
+        <div class="w-full h-20 flex items-center justify-center mt-8" ref="loading">
+           <div class="w-2 h-2 rounded-full bg-current opacity-20 animate-ping"></div>
+        </div>
+        <div class="w-full h-16" ref="bottom"></div>
       </div>
     </div>
   </div>
+  <TranslateToggle class="fixed bottom-20 right-4 z-50 shadow-2xl rounded-full" />
 </template>
 
 <script setup lang="ts">
 import jump from '@/plugins/jump'
 import settings from '@/config/themeConfig'
 import API from '@api'
+import TranslateToggle from '@/components/TranslateToggle.vue'
 import { useLoading } from '@/hooks/loading'
 import { useThrottleFn } from '@vueuse/shared'
 import { isNullOrBlank } from '@/utils/utils'
-import { initXboxGamepad } from '@/utils/xboxGamepad'
 
 const content = ref()
 // loading spinner
-const { isLoading, loadingWrapper } = useLoading(content, '正在获取信息')
+const { isLoading, loadingWrapper } = useLoading(content, 'Đang lấy thông tin')
 const store = useBookStore()
 
 const {
@@ -157,6 +194,16 @@ watch(
     sessionStorage.setItem('chapterPos', book.chapterPos.toString())
   },
   { deep: 1 },
+)
+
+// 监听翻译模式变化
+watch(
+  () => store.isTranslateMode,
+  async () => {
+    // 重新加载目录和当前章节内容
+    await store.loadWebCatalog(store.readingBook)
+    getContent(chapterIndex.value, true, chapterPos.value)
+  },
 )
 
 // 无限滚动
@@ -228,24 +275,11 @@ const chapterTheme = computed(() => {
   }
 })
 const showToolBar = ref(false)
-const leftBarTheme = computed(() => {
-  return {
-    background: popupColor.value,
-    marginLeft: miniInterface.value
-      ? 0
-      : -(store.config.readWidth / 2 + 68) + 'px',
-    display: miniInterface.value && !showToolBar.value ? 'none' : 'block',
-  }
+const readingProgressPercent = computed(() => {
+  if (catalog.value.length === 0) return '0%'
+  return Math.round(((chapterIndex.value + 1) / catalog.value.length) * 100) + '%'
 })
-const rightBarTheme = computed(() => {
-  return {
-    background: popupColor.value,
-    marginRight: miniInterface.value
-      ? 0
-      : -(store.config.readWidth / 2 + 52) + 'px',
-    display: miniInterface.value && !showToolBar.value ? 'none' : 'block',
-  }
-})
+// leftBarTheme/rightBarTheme removed — replaced by top/bottom bar layout
 
 /**
  * pc移动端判断 最大阅读宽度修正
@@ -301,17 +335,11 @@ const getContent = (index: number, reloadChapter = true, chapterPos = 0) => {
   const { title, index: chapterIndex } = catalog.value[index]
 
   loadingWrapper(
-    API.getBookContent(bookUrl, chapterIndex).then(
+    API.getBookContent(bookUrl, chapterIndex, store.isTranslateMode).then(
       res => {
         if (res.data.isSuccess) {
           const data = res.data.data
           const content = data.split(/\n+/)
-          const urlEncodedBookUrl = encodeURIComponent(bookUrl)
-          for (let i = 0; i < content.length; i++) {
-            if (!/^\s*<img[^>]*src[^>]+>$/.test(content[i])) {
-              content[i] = content[i].replace(new RegExp('img src="', 'g'), `img src="/image?url=${urlEncodedBookUrl}&path=`);
-            }
-          }
           chapterData.value.push({ index, content, title })
           if (reloadChapter) toChapterPos(chapterPos)
         } else {
@@ -327,7 +355,7 @@ const getContent = (index: number, reloadChapter = true, chapterPos = 0) => {
         }
       },
       err => {
-        const content = ['获取章节内容失败！']
+        const content = ['Lấy nội dung chương thất bại！']
         chapterData.value.push({ index, content, title })
         store.setShowContent(true)
         throw err
@@ -391,14 +419,14 @@ const toNextChapter = () => {
   const index = chapterIndex.value + 1
   if (typeof catalog.value[index] !== 'undefined') {
     ElMessage({
-      message: '下一章',
+      message: 'Chương sau',
       type: 'info',
     })
     getContent(index)
     store.saveBookProgress()
   } else {
     ElMessage({
-      message: '本章是最后一章',
+      message: 'Đây là chương cuối',
       type: 'error',
     })
   }
@@ -408,14 +436,14 @@ const toPreChapter = () => {
   const index = chapterIndex.value - 1
   if (typeof catalog.value[index] !== 'undefined') {
     ElMessage({
-      message: '上一章',
+      message: 'Chương trước',
       type: 'info',
     })
     getContent(index)
     store.saveBookProgress()
   } else {
     ElMessage({
-      message: '本章是第一章',
+      message: 'Đây là chương đầu',
       type: 'error',
     })
   }
@@ -440,7 +468,7 @@ const handleKeyPress = (event: KeyboardEvent) => {
       event.stopPropagation()
       event.preventDefault()
       if (document.documentElement.scrollTop === 0) {
-        ElMessage.warning('已到达页面顶部')
+        ElMessage.warning('Đã đến đầu trang')
       } else {
         canJump = false
         jump(0 - document.documentElement.clientHeight + 100, {
@@ -457,7 +485,7 @@ const handleKeyPress = (event: KeyboardEvent) => {
           document.documentElement.scrollTop ===
         document.documentElement.scrollHeight
       ) {
-        ElMessage.warning('已到达页面底部')
+        ElMessage.warning('Đã đến cuối trang')
       } else {
         canJump = false
         jump(document.documentElement.clientHeight - 100, {
@@ -487,7 +515,7 @@ onMounted(async () => {
   const chapterPos = Number(sessionStorage.getItem('chapterPos') || 0)
   const isSeachBook = sessionStorage.getItem('isSeachBook') === 'true'
   if (isNullOrBlank(bookUrl) || isNullOrBlank(name) || author === null) {
-    ElMessage.warning('书籍信息为空，即将自动返回书架页面...')
+    ElMessage.warning('Thông tin sách trống, sắp tự động về kệ sách...')
     return setTimeout(toShelf, 500)
   }
   const book: typeof store.readingBook = {
@@ -520,7 +548,6 @@ onMounted(async () => {
       document.title = (name as string) + ' | ' + chapters[chapterIndex].title
     }),
   )
-  initXboxGamepad()
 })
 
 onUnmounted(() => {
@@ -539,9 +566,9 @@ const addToBookShelfConfirm = async () => {
   const book = store.readingBook
   // 阅读的是搜索的书籍 并未在书架
   if (book.isSeachBook === true) {
-    await ElMessageBox.confirm(`是否将《${book.name}》放入书架？`, '放入书架', {
-      confirmButtonText: '确认',
-      cancelButtonText: '否',
+    await ElMessageBox.confirm(`Có muốn thêm "${book.name}" vào kệ không?`, 'Thêm vào kệ', {
+      confirmButtonText: 'Xác nhận',
+      cancelButtonText: 'Không',
       type: 'info',
       /*
         ElMessageBox.confirm默认在触发hashChange事件时自动关闭
@@ -570,209 +597,38 @@ onBeforeRouteLeave(async (to, from, next) => {
 })
 </script>
 
-<style lang="scss" scoped>
-:deep(.pop-setting) {
-  margin-left: 68px;
-  top: 0;
+<style lang="scss">
+/* Base font styles for Legado Web */
+@font-face {
+  font-family: 'iconfont';
+  src: url('@/assets/fonts/iconfont.woff?t=1690025732296') format('woff');
+}
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-:deep(.pop-cata) {
-  margin-left: 10px;
+.chapter-content-block {
+  margin-bottom: 2em;
 }
 
-.chapter-wrapper {
-  padding: 0 4%;
-
-  overflow-x: hidden;
-
-  :deep(.no-point) {
-    pointer-events: none;
-  }
-
-  .tool-bar {
-    position: fixed;
-    top: 0;
-    left: 50%;
-    z-index: 100;
-
-    .tools {
-      display: flex;
-      flex-direction: column;
-
-      .tool-icon {
-        font-size: 18px;
-        width: 58px;
-        height: 48px;
-        text-align: center;
-        padding-top: 12px;
-        cursor: pointer;
-        outline: none;
-
-        .iconfont {
-          font-family: iconfont;
-          width: 16px;
-          height: 16px;
-          font-size: 16px;
-          margin: 0 auto 6px;
-        }
-
-        .icon-text {
-          font-size: 12px;
-        }
-      }
-    }
-  }
-
-  .read-bar {
-    position: fixed;
-    bottom: 0;
-    right: 50%;
-    z-index: 100;
-
-    .tools {
-      display: flex;
-      flex-direction: column;
-
-      .tool-icon {
-        font-size: 18px;
-        width: 42px;
-        height: 31px;
-        padding-top: 12px;
-        text-align: center;
-        align-items: center;
-        cursor: pointer;
-        outline: none;
-        margin-top: -1px;
-
-        .iconfont {
-          font-family: iconfont;
-          width: 16px;
-          height: 16px;
-          font-size: 16px;
-          margin: 0 auto 6px;
-        }
-      }
-    }
-  }
-
-  .chapter {
-    font-family: 'Microsoft YaHei', PingFangSC-Regular, HelveticaNeue-Light,
-      'Helvetica Neue Light', sans-serif;
-    text-align: left;
-    padding: 0 65px;
-    min-height: 100vh;
-    width: 670px;
-    margin: 0 auto;
-
-    .content {
-      font-size: 18px;
-      line-height: 1.8;
-      font-family: 'Microsoft YaHei', PingFangSC-Regular, HelveticaNeue-Light,
-        'Helvetica Neue Light', sans-serif;
-
-      .bottom-bar,
-      .top-bar {
-        height: 64px;
-      }
-    }
-  }
+/* Theme presets logic */
+[style*="background: #FFF9F0"] {
+  @apply text-[#2C2C2C];
 }
-
-.day {
-  :deep(.popup) {
-    box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.12),
-      0 0 6px rgba(0, 0, 0, 0.04);
-  }
-
-  :deep(.tool-icon) {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    margin-top: -1px;
-    color: #000;
-
-    .icon-text {
-      color: rgba(0, 0, 0, 0.4);
-    }
-  }
-
-  :deep(.chapter) {
-    border: 1px solid #d8d8d8;
-    color: #262626;
-  }
+[style*="background: #F4ECD8"] {
+  @apply text-[#5C4A1E];
 }
-
-.night {
-  :deep(.popup) {
-    box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.48),
-      0 0 6px rgba(0, 0, 0, 0.16);
-  }
-
-  :deep(.tool-icon) {
-    border: 1px solid #444;
-    margin-top: -1px;
-    color: #666;
-
-    .icon-text {
-      color: #666;
-    }
-  }
-
-  :deep(.chapter) {
-    border: 1px solid #444;
-    color: #666;
-  }
-
-  :deep(.popper__arrow) {
-    background: #666;
-  }
+[style*="background: #1A1A2E"] {
+  @apply text-[#C8C8D0];
 }
-
-@media screen and (max-width: 776px) {
-  .chapter-wrapper {
-    padding: 0;
-
-    .tool-bar {
-      left: 0;
-      width: 100vw;
-      margin-left: 0 !important;
-
-      .tools {
-        flex-direction: row;
-        justify-content: space-between;
-
-        .tool-icon {
-          border: none;
-        }
-      }
-    }
-
-    .read-bar {
-      right: 0;
-      width: 100vw;
-      margin-right: 0 !important;
-
-      .tools {
-        flex-direction: row;
-        justify-content: space-between;
-        padding: 0 15px;
-
-        .tool-icon {
-          border: none;
-          width: auto;
-
-          .iconfont {
-            display: inline-block;
-          }
-        }
-      }
-    }
-
-    .chapter {
-      width: 100vw !important;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-  }
+[style*="background: #1B2A1B"] {
+  @apply text-[#A8D5A2];
+}
+[style*="background: #0A1628"] {
+  @apply text-[#7EB3D4];
 }
 </style>

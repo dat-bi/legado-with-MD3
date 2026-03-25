@@ -6,20 +6,20 @@
 
     <group android:id="@+id/menu_group_on_line">
         <item
-            android:id="@+id/menu_refresh"
-            android:icon="@drawable/ic_refresh"
-            android:title="@string/refresh"
-            app:showAsAction="always" />
-
-        <item
             android:id="@+id/menu_change_source"
             android:icon="@drawable/ic_exchange"
             android:title="@string/change_origin"
             app:showAsAction="always" />
 
         <item
+            android:id="@+id/menu_refresh"
+            android:icon="@drawable/ic_refresh_black_24dp"
+            android:title="@string/refresh"
+            app:showAsAction="always" />
+
+        <item
             android:id="@+id/menu_download"
-            android:icon="@drawable/ic_download"
+            android:icon="@drawable/ic_download_line"
             android:title="@string/offline_cache"
             app:showAsAction="always" />
 
@@ -38,16 +38,16 @@
 
         <item
             android:id="@+id/menu_set_charset"
-            android:icon="@drawable/ic_translate"
             android:title="@string/set_charset"
             app:showAsAction="always" />
 
-    </group>
+        <item
+            android:id="@+id/menu_translate"
+            android:icon="@drawable/ic_translate"
+            android:title="@string/translate"
+            app:showAsAction="always" />
 
-    <item
-        android:id="@+id/menu_tool_button"
-        android:title="@string/config_btn"
-        app:showAsAction="never" />
+    </group>
 
     <item
         android:id="@+id/menu_add_bookmark"
@@ -91,16 +91,6 @@
         android:checkable="true"
         android:checked="true"
         android:title="@string/replace_rule_title"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/menu_setting_replace"
-        android:title="@string/replace_rule_title_setting"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/menu_effective_replaces"
-        android:title="@string/effective_replaces"
         app:showAsAction="never" />
 
     <item
@@ -153,6 +143,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/menu_effective_replaces"
+        android:title="@string/effective_replaces"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/menu_log"
         android:title="@string/log"
         app:showAsAction="never" />
@@ -160,6 +155,16 @@
     <item
         android:id="@+id/menu_help"
         android:title="@string/help"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_setting_replace"
+        android:title="@string/replace_rule_title"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_tool_button"
+        android:title="@string/tool_button_config"
         app:showAsAction="never" />
 
 </menu>

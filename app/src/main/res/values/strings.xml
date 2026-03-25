@@ -296,6 +296,7 @@
     <string name="top">Top</string>
     <string name="padding">Padding</string>
     <string name="padding_top">Top</string>
+
     <string name="padding_bottom">Bottom</string>
     <string name="padding_left">Left</string>
     <string name="padding_right">Right</string>
@@ -1288,7 +1289,7 @@
     <string name="reduce_stutter">Reduces stutter when entering the reading interface, but increases book loading time.</string>
     <string name="delay_book_load">Delay Book Loading</string>
     <string name="compact_list">Compact List</string>
-    <string name="author_read">%s • %dNot read</string>
+    <string name="author_read">%1$s • %2$dNot read</string>
     <string name="menu_alpha_sum">Current %d%%</string>
     <string name="menu_alpha">Menu transparency</string>
     <string name="change_source_option_title">请选择操作</string>
@@ -1394,4 +1395,57 @@
     <string name="enable_select_vibrator">选择文本时震动</string>
     <string name="re_sync_webdav">重新同步远程书籍</string>
     <string name="underline_padding">离字间距</string>
+    <!-- Translation feature strings -->
+    <string name="ai_translation">AI Translation</string>
+    <string name="translate_page">Translate Page</string>
+    <string name="restore_original">Restore Original</string>
+    <string name="translate_setting">Translation Settings</string>
+    <string name="translate_enable_summary">Enable AI translation feature</string>
+    <string name="custom_dict_manage">Custom Dictionary</string>
+    <string name="custom_dict_manage_summary">Manage custom translation dictionaries</string>
+    <string name="ai_model_title">AI Model</string>
+    <string name="tool_button_config">Toolbar Button Config</string>
+    <!-- API controller strings -->
+    <string name="no_books_added">No books added yet</string>
+    <string name="book_url_empty">Book URL is empty</string>
+    <string name="image_url_empty">Image URL is empty</string>
+    <string name="book_url_invalid">Invalid book URL</string>
+    <string name="error_url_empty_specify_address">URL is empty, please specify an address</string>
+    <string name="error_book_not_found_add_first">Book not found, please add it to the bookshelf first</string>
+    <string name="error_source_not_found_change">Book source not found, please change to another source</string>
+    <string name="error_index_empty_specify_order">Index is empty, please specify the chapter order</string>
+    <string name="not_found">Not found</string>
+    <string name="source_not_found">Source not found</string>
+    <string name="invalid_format">Invalid format</string>
+    <string name="filename_not_empty">Filename cannot be empty</string>
+    <string name="filedata_not_empty">File data cannot be empty</string>
+    <string name="reset_save_location">Please reset the save location in settings</string>
+    <string name="save_book_error">Failed to save book: %1$s</string>
+    <string name="no_config">No config found</string>
+    <string name="download">Download</string>
+    <!-- JS extension strings -->
+    <string name="sc_content_get_failed">Content fetch failed</string>
+    <string name="sc_first_download">First download %1$s &gt;&gt; %2$s</string>
+    <string name="sc_illegal_path">Illegal path</string>
+    <string name="sc_content_not_found">Content not found</string>
+    <string name="sc_get_font_handler_error">Font handler error</string>
+    <string name="sc_read_font_error">Typeface load error: %1$s\n%2$s</string>
+    <!-- AI Model strings -->
+    <string name="ai_model_delete_confirm">Delete this AI model?</string>
+    <string name="ai_model_delete_success">AI model deleted successfully</string>
+    <string name="ai_model_status_downloading">Downloading…</string>
+    <string name="ai_model_downloading_percent">Downloading: %1$d%%</string>
+    <string name="ai_model_download_success">AI model downloaded successfully</string>
+    <string name="ai_model_download_error">Download failed: %1$s</string>
+    <string name="ai_model_status_ready">Ready</string>
+    <string name="ai_model_status_not_downloaded">Not downloaded</string>
+    <!-- Dict manage & import strings -->
+    <string name="import_success">Import successful</string>
+    <string name="import_fail">Import failed</string>
+    <string name="import_names">Import names dictionary</string>
+    <string name="import_vietphrase">Import VietPhrase dictionary</string>
+    <string name="import_phienam">Import PhienAm dictionary</string>
+    <string name="delete_success">Deleted successfully</string>
+    <string name="ai_model_download_cancelled">Download cancelled</string>
+    <string name="translate">Translate</string>
 </resources>

@@ -231,6 +231,32 @@ fun MyScreen(
                         )
                     }
                 )
+                SettingItem(
+                    title = stringResource(R.string.translate_setting),
+                    description = stringResource(R.string.translate_enable_summary),
+                    imageVector = Icons.Default.Translate,
+                    trailingContent = {
+                        Switch(
+                            checked = uiState.isTranslateEnable,
+                            onCheckedChange = {
+                                viewModel.onEvent(PrefClickEvent.ToggleTranslate)
+                            }
+                        )
+                    },
+                    onClick = { }
+                )
+                if (uiState.isTranslateEnable) {
+                    SettingItem(
+                        title = stringResource(R.string.custom_dict_manage),
+                        description = stringResource(R.string.custom_dict_manage_summary),
+                        imageVector = Icons.Default.Translate,
+                        onClick = {
+                            onNavigate(
+                                PrefClickEvent.StartActivity(io.legado.app.ui.dict.manage.DictManageActivity::class.java)
+                            )
+                        }
+                    )
+                }
             }
             SplicedColumnGroup(
                 modifier = Modifier.padding(horizontal = 16.dp),

@@ -17,6 +17,7 @@ import io.legado.app.ui.widget.text.AccentBgTextView
 import io.legado.app.utils.dpToPx
 import io.legado.app.utils.gone
 import io.legado.app.utils.visible
+import io.legado.app.utils.setTranslatedText
 
 
 class SearchAdapter(context: Context, val callBack: CallBack) :
@@ -85,8 +86,8 @@ class SearchAdapter(context: Context, val callBack: CallBack) :
 
     private fun bind(binding: ItemSearchBinding, searchBook: SearchBook) {
         binding.run {
-            tvName.text = searchBook.name
-            tvAuthor.text = context.getString(R.string.author_show, searchBook.author)
+            tvName.setTranslatedText(searchBook.name)
+            tvAuthor.setTranslatedText(searchBook.author) { context.getString(R.string.author_show, it) }
             when (callBack.getBookShelfState(searchBook.name, searchBook.author, searchBook.bookUrl)) {
                 BookShelfState.IN_SHELF -> {
                     ivInBookshelf.isVisible = true
@@ -102,7 +103,7 @@ class SearchAdapter(context: Context, val callBack: CallBack) :
             }
             bvOriginCount.text = searchBook.origins.size.toString()
             upLasted(binding, searchBook.latestChapterTitle)
-            tvIntroduce.text = searchBook.trimIntro(context)
+            tvIntroduce.setTranslatedText(searchBook.trimIntro(context))
             upKind(binding, searchBook.getKindList())
             ivCover.load(
                 searchBook.coverUrl,
@@ -154,8 +155,9 @@ class SearchAdapter(context: Context, val callBack: CallBack) :
             if (latestChapterTitle.isNullOrEmpty()) {
                 tvLasted.gone()
             } else {
-                tvLasted.text =
-                    context.getString(R.string.lasted_show, latestChapterTitle)
+                tvLasted.setTranslatedText(latestChapterTitle) {
+                    context.getString(R.string.lasted_show, it)
+                }
                 tvLasted.visible()
             }
         }

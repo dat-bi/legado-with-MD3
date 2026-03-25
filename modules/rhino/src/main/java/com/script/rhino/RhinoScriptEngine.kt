@@ -321,7 +321,7 @@ object RhinoScriptEngine : AbstractScriptEngine(), Invocable, Compilable {
             override fun makeContext(): Context {
                 val cx = RhinoContext(this)
                 cx.languageVersion = Context.VERSION_ES6
-                cx.isInterpretedMode = true
+                cx.optimizationLevel = -1 // interpreted mode (equivalent to isInterpretedMode = true)
                 cx.setClassShutter(RhinoClassShutter)
                 cx.wrapFactory = RhinoWrapFactory
                 cx.instructionObserverThreshold = 10000

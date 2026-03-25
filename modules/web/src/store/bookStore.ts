@@ -43,6 +43,7 @@ export const useBookStore = defineStore('book', {
       config: default_config,
       miniInterface: false,
       readSettingsVisible: false,
+      isTranslateMode: false,
     }
   },
   getters: {
@@ -68,7 +69,7 @@ export const useBookStore = defineStore('book', {
   actions: {
     /** 从后端加载书架书籍，优先返回内存缓存 */
     async loadBookShelf(): Promise<Book[]> {
-      const fetchBookshellf_promise = API.getBookShelf().then(resp => {
+      const fetchBookshellf_promise = API.getBookShelf(this.isTranslateMode).then(resp => {
         console.log('API.getBookShelf数据返回')
         const { isSuccess, data, errorMsg } = resp.data
         if (isSuccess === true) {
@@ -77,7 +78,7 @@ export const useBookStore = defineStore('book', {
             this.shelf.length > 0 &&
             data.length > 0
           ) {
-            ElMessage.info(`书架数据已更新`)
+            ElMessage.info(`Kệ sách đã cập nhật`)
           }
           this.shelf = data.sort((a, b) => {
             const x = a['durChapterTime'] || 0
@@ -86,7 +87,7 @@ export const useBookStore = defineStore('book', {
           })
         } else {
           if (errorMsg.includes('还没有添加小说') && this.shelf.length > 0) {
-            ElMessage.info('当前书架上的书籍已经被删除')
+            ElMessage.info('Sách hiện tại đã bị xóa khỏi kệ')
             return (this.shelf = [])
           }
           ElMessage.error(errorMsg ?? '后端返回格式错误！')
@@ -111,6 +112,7 @@ export const useBookStore = defineStore('book', {
       const { bookUrl, name, chapterIndex } = book
       const fetchChapterList_promise = API.getChapterList(
         bookUrl as string,
+        this.isTranslateMode
       ).then(res => {
         const { isSuccess, data, errorMsg } = res.data
         if (isSuccess === false) {
@@ -203,8 +205,15 @@ export const useBookStore = defineStore('book', {
         )
       }
       // 直接关闭浏览器时 http请求可能被取消
-      // return API.saveBookProgress(this.bookProgress)
       return API.saveBookProgressWithBeacon(this.bookProgress)
+    },
+    setTranslateMode(enable: boolean) {
+      this.isTranslateMode = enable
+      this.shelf = []
+      this.catalog = []
+    },
+    toggleTranslateMode() {
+      this.setTranslateMode(!this.isTranslateMode)
     },
   },
 })

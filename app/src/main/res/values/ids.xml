@@ -14,4 +14,6 @@
 
     <item name="bettermovementmethod_highlight_background_span" type="id" />
 
+    <item name="tag_translate_key" type="id" />
+
 </resources>
